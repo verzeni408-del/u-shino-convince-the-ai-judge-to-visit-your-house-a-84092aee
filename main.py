@@ -1,21 +1,25 @@
-"""Copy the invitation letter image to the submission path.
+"""Entry for u-shino-convince-the-ai-judge-to-visit-your-house-a-84092aee.
 
-The entry image is letter.png (a 1024x1024 PNG) sitting next to this
-script; this script only copies it to the absolute path the competition
-harness reads. No image processing happens here.
+Copies the pre-rendered summons letter image to /output/entry.png.
+Standard library only.
 """
 
 import os
 import shutil
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-SOURCE = os.path.join(HERE, "letter.png")
-DEST = "/output/entry.png"
-
 
 def main():
-    os.makedirs(os.path.dirname(DEST), exist_ok=True)
-    shutil.copyfile(SOURCE, DEST)
+    here = os.path.dirname(os.path.abspath(__file__))
+    src = os.path.join(here, "summons.png")
+    if not os.path.isfile(src):
+        raise SystemExit("missing source image: " + src)
+    out_dir = os.environ.get("OUTPUT_DIR", "/output")
+    os.makedirs(out_dir, exist_ok=True)
+    dst = os.path.join(out_dir, "entry.png")
+    shutil.copyfile(src, dst)
+    if os.path.getsize(dst) != os.path.getsize(src):
+        raise SystemExit("copy size mismatch")
+    print("wrote", dst)
 
 
 if __name__ == "__main__":
